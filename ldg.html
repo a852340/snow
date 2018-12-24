@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>随便</title>
+    <script>
+        var BALLS_NUM = 50;
+        var balls = new Array();
+        var cvs;
+        var tx;
+        var img =new     Image();
+
+        function init() {
+            cvs = document.getElementById("cvs");
+            tx = cvs.getContext("2d");
+            img.src="./img/img.jpg"
+            //初始化N个球球
+            for (var i = 0;i < BALLS_NUM;i++) {
+                var x = Math.random()*400;
+                var y = Math.random()*400;
+                var r = Math.random()*5;
+                var s = Math.random()*3+2;
+                var a = new ball(x,y,r,s);
+                a.alive = true;
+                balls.push(a);
+            }
+        }
+        function update() {
+            //下坠
+            for (var i = 0;i < BALLS_NUM;i++) {
+                balls[i].y += balls[i].speed;
+                if (balls[i].y > 400) {
+                    balls[i].alive = false;
+                }
+            }
+        }
+        function updateBalls() {
+            for (var i = 0;i < balls.length;i++) {
+                if (balls[i].alive == false) {
+                    balls[i].x = Math.random()*400;
+                    balls[i].y = Math.random()*50;
+                    balls[i].r = Math.random()*5;
+                    balls[i].s = Math.random()*3+2;
+                    balls[i].alive = true;
+                }
+            }
+        }
+
+        function ball(x,y,r,speed) {
+            this.x = x;
+            this.y = y;
+            this.r = r;
+            this.alive = false;
+            this.speed = speed;
+        }
+        function drawball(x,y,r) {
+
+            tx.fillStyle="#FFFAFA";
+            tx.beginPath();
+            tx.arc(x,y,r,0,2*Math.PI,true);
+            tx.closePath();
+            tx.fill();
+        }
+        function clearScreen() {
+            tx.clearRect(0,0,cvs.width,cvs.height);
+        }
+        function draw() {
+            clearScreen();
+            updateBalls();
+            tx.drawImage(img,0,0);
+            for (var i = 0;i < balls.length;i++) {
+                if (balls[i].alive)
+                    drawball(balls[i].x,balls[i].y,balls[i].r);
+            }
+
+            update();
+            setTimeout(draw,50);
+        }
+        function main() {
+            init();
+            draw();
+        }
+        window.onload = main;
+    </script>
+</head>
+<body>
+    <canvas id="cvs" width="400px" height="400px"></canvas>
+</body>
+</html>
